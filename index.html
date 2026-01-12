@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typify</title>
+    <link rel="icon" type="image/png" href="logo-t.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&family=Inter:wght@400;600&family=Roboto+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .subtitle {
+            margin-top: 12px;
+            font-size: 16px;
+            font-family: 'Times New Roman', Times, serif;
+            letter-spacing: 2px;
+            color: rgba(220, 220, 220, 0.6);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(6px);
+            animation: subtitleFade 1.5s ease forwards;
+            animation-delay: 2.5s;
+            text-shadow: 0 0 10px rgba(200, 200, 200, 0.15);
+        }
+
+        @keyframes subtitleFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0b0617;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            cursor: text;
+        }
+
+        /* Animated background glow effect */
+        .glow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Cursor-following glow */
+        .cursor-glow {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.5) 0%, rgba(138, 43, 226, 0.3) 30%, transparent 70%);
+            filter: blur(80px);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.5s ease, left 0.8s ease-out, top 0.8s ease-out;
+            z-index: 1;
+        }
+
+        /* Ambient background orbs (subtle) */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .glow-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.3) 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .glow-orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.25) 0%, transparent 70%);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 5s;
+            animation-duration: 25s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(50px, -30px) scale(1.1);
+            }
+
+            50% {
+                transform: translate(-30px, 50px) scale(0.9);
+            }
+
+            75% {
+                transform: translate(40px, 30px) scale(1.05);
+            }
+        }
+
+        /* Subtle wave overlay */
+        .wave-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(147, 51, 234, 0.08) 0%, transparent 50%);
+            animation: wave 15s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes wave {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Developer Credit */
+        .developer-credit {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            z-index: 20;
+        }
+
+        .developer-credit a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .developer-credit a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .developer-credit a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        /* Top Right Logo */
+        .top-logo {
+            position: fixed;
+            top: 25px;
+            right: 30px;
+            width: 50px;
+            height: auto;
+            z-index: 20;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .top-logo:hover {
+            opacity: 1;
+        }
+
+        /* Logo container */
+        .logo-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            z-index: 10;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 29px;
+        }
+
+        /* Logo */
+        .logo {
+            font-size: 75px;
+            font-family: 'Times New Roman', Times, serif;
+            font-style: normal;
+            font-weight: 400;
+            background: linear-gradient(135deg, #ffffff 0%, #e7e7e7 50%, #b8b8b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-shadow: 0 0 20px rgba(231, 231, 231, 0.3);
+            filter: drop-shadow(0 0 15px rgba(231, 231, 231, 0.2));
+            white-space: nowrap;
+        }
+
+        /* Blinking caret */
+        .caret {
+            display: inline-block;
+            width: 3px;
+            height: 75px;
+            background: linear-gradient(135deg, #ffffff 0%, #e7e7e7 50%, #b8b8b8 100%);
+            margin-left: 2px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            transform: translateY(-2px);
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* 3D Cube */
+        .cube-container {
+            perspective: 800px;
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+            transition: transform 1.2s ease-in-out;
+            z-index: 2;
+            position: relative;
+        }
+
+        .mode-typing .cube-container {
+            transform: scale(2);
+            transition: transform 1.2s ease-in-out;
+        }
+
+        .mode-typing .cube-container.milestone-100 {
+            animation: celebrate100 0.6s ease-in-out;
+        }
+
+        @keyframes celebrate100 {
+
+            0%,
+            100% {
+                transform: scale(2);
+            }
+
+            50% {
+                transform: scale(2.3);
+            }
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            /* Animation removed - now controlled by JavaScript */
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(168, 85, 247, 0.15);
+            border: 2px solid rgba(231, 231, 231, 0.4);
+            box-shadow:
+                0 0 20px rgba(168, 85, 247, 0.3),
+                inset 0 0 20px rgba(231, 231, 231, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .cube-face.front {
+            transform: rotateY(0deg) translateZ(25px);
+        }
+
+        .cube-face.back {
+            transform: rotateY(180deg) translateZ(25px);
+        }
+
+        .cube-face.right {
+            transform: rotateY(90deg) translateZ(25px);
+        }
+
+        .cube-face.left {
+            transform: rotateY(-90deg) translateZ(25px);
+        }
+
+        .cube-face.top {
+            transform: rotateX(90deg) translateZ(25px);
+        }
+
+        .cube-face.bottom {
+            transform: rotateX(-90deg) translateZ(25px);
+        }
+
+        .cube-face.bronze {
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.4), rgba(160, 82, 45, 0.2));
+            box-shadow:
+                inset 0 0 15px rgba(255, 255, 255, 0.2),
+                0 0 20px rgba(205, 127, 50, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .cube-face.gold {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.4), rgba(218, 165, 32, 0.2));
+            box-shadow:
+                inset 0 0 20px rgba(255, 255, 255, 0.3),
+                0 0 30px rgba(255, 215, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Keyframes removed - rotation now controlled by JavaScript */
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%);
+            }
+
+            50% {
+                transform: translate(-50%, calc(-50% - 8px));
+            }
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: neue-haas-unica, IBM Plex Sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.1),
+                    transparent);
+            transition: 0.5s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4),
+                inset 0 0 10px rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        .start-btn:hover::before {
+            left: 100%;
+        }
+
+        .logo:hover {
+            animation: fadeInCenter 1s ease-out, floatHover 4s ease-in-out infinite;
+        }
+
+
+
+        /* Particle effect (optional subtle enhancement) */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(168, 85, 247, 0.5);
+            border-radius: 50%;
+            animation: rise linear infinite;
+        }
+
+        @keyframes rise {
+            from {
+                transform: translateY(0) translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-100vh) translateX(calc(var(--drift) * 1px));
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 50px;
+            }
+
+            .logo:hover {
+                font-size: 57px;
+            }
+
+            .caret {
+                height: 50px;
+            }
+
+            .logo:hover .caret {
+                height: 57px;
+            }
+
+            .cube-container {
+                width: 35px;
+                height: 35px;
+            }
+
+            .cube-face {
+                width: 35px;
+                height: 35px;
+            }
+
+            .cube-face.front {
+                transform: rotateY(0deg) translateZ(17.5px);
+            }
+
+            .cube-face.back {
+                transform: rotateY(180deg) translateZ(17.5px);
+            }
+
+            .cube-face.right {
+                transform: rotateY(90deg) translateZ(17.5px);
+            }
+
+            .cube-face.left {
+                transform: rotateY(-90deg) translateZ(17.5px);
+            }
+
+            .cube-face.top {
+                transform: rotateX(90deg) translateZ(17.5px);
+            }
+
+            .cube-face.bottom {
+                transform: rotateX(-90deg) translateZ(17.5px);
+            }
+        }
+
+        /* Transition States */
+        .fade-out {
+            opacity: 0 !important;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+
+        .logo-container {
+            transition: top 1.2s ease-in-out, transform 1.2s ease-in-out, gap 1s ease;
+        }
+
+        .mode-typing.logo-container {
+            top: 28%;
+            /* Move slightly lower than before */
+            gap: 0;
+        }
+
+        .logo-row {
+            transition: gap 1s ease-in-out;
+        }
+
+        .mode-typing .logo-row {
+            flex-direction: column-reverse;
+            gap: 20px;
+        }
+
+        .logo {
+            transition: width 1s ease-in-out, opacity 0.8s ease, margin 1s ease;
+            overflow: hidden;
+        }
+
+        .mode-typing .logo {
+            width: auto;
+            opacity: 1;
+            margin-top: 5px;
+            font-size: 75px;
+            /* Big like intro page */
+            background: #a855f7;
+            /* Matching stats color */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-mask-image: radial-gradient(circle 100px at var(--mx, -1000px) var(--my, -1000px), black 0%, transparent 100%);
+            mask-image: radial-gradient(circle 100px at var(--mx, -1000px) var(--my, -1000px), black 0%, transparent 100%);
+        }
+
+        .mode-typing .caret {
+            display: none;
+        }
+
+        /* Typing View */
+        #typing-view {
+            position: fixed;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 80%;
+            max-width: 900px;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        #typing-view.active {
+            opacity: 1;
+            pointer-events: auto;
+            transition-delay: 0.8s;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+            font-family: "Inter", system-ui, sans-serif;
+            font-size: 18px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .stat-value {
+            color: #a855f7;
+            font-weight: 400;
+            font-size: 20px;
+        }
+
+        .passage-container {
+            background: #1E2233;
+            border-radius: 20px;
+            padding: 40px;
+            color: #646669;
+            /* DIM GREY (The "waiting" text) */
+            font-family: "Roboto Mono", monospace;
+            font-size: 24px;
+            line-height: 1.8;
+            height: calc(3 * 1.8 * 24px + 80px);
+            /* 3 lines + padding */
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(58, 63, 92, 0.1);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .passage-text {
+            position: relative;
+            z-index: 2;
+            user-select: none;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        .passage-text span {
+            position: relative;
+            transition: color 0.15s ease, background-color 0.15s ease;
+        }
+
+        .passage-text span.correct {
+            color: #d1d0c5;
+            /* BRIGHT WHITE / LIGHT GREY */
+        }
+
+        .passage-text span.incorrect {
+            color: #ca4754;
+            /* RED */
+        }
+
+
+
+        /* Custom Liquid Caret */
+        #custom-caret {
+            position: absolute;
+            width: 2px;
+            height: 1.4em;
+            background: linear-gradient(180deg, #a855f7 0%, #c084fc 100%);
+            border-radius: 1px;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+            top: 0;
+            left: 0;
+            /* GPU-accelerated smooth motion */
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            will-change: transform;
+        }
+
+        #custom-caret.active {
+            opacity: 1;
+            animation: caretBlink 1s step-end infinite;
+        }
+
+        @keyframes caretBlink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Caret Variants */
+        #custom-caret.type-block {
+            width: 14px;
+            background: rgba(168, 85, 247, 0.3);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+        }
+
+        #custom-caret.type-outline {
+            width: 14px;
+            background: transparent;
+            border: 2px solid #a855f7;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+        }
+
+        #custom-caret.type-underline {
+            width: 14px;
+            height: 3px;
+            top: 1.1em;
+            background: #a855f7;
+            border-radius: 2px;
+        }
+
+        /* Settings Menu UI */
+        .settings-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .settings-btn.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(168, 85, 247, 0.4);
+        }
+
+        .settings-modal {
+            position: fixed;
+            top: 80px;
+            left: 30px;
+            width: 280px;
+            background: rgba(23, 26, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            border-radius: 20px;
+            z-index: 99;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .settings-modal.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .settings-section {
+            margin-bottom: 24px;
+        }
+
+        .settings-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-label {
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .settings-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .option-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #a855f7;
+        }
+
+        /* Results Page */
+        #result-page {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            max-width: 90vw;
+            background: rgba(23, 26, 40, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 40px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #result-page.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .result-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+        }
+
+        .result-stat {
+            text-align: center;
+        }
+
+        .result-stat-label {
+            display: block;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .result-stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #a855f7;
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .chart-wrapper {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .next-test-btn {
+            background: #a855f7;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .next-test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(168, 85, 247, 0.4);
+            filter: brightness(1.1);
+        }
+
+        /* Start Over Button */
+        .restart-button {
+            position: fixed;
+            top: calc(45% + 280px);
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            font-family: "Inter", system-ui, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .restart-button.active {
+            opacity: 1;
+            pointer-events: auto;
+            transition-delay: 0.8s;
+        }
+
+        .restart-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .restart-icon {
+            width: 18px;
+            height: 18px;
+            color: #fbbf24;
+        }
+
+        /* Performance Charts */
+        .performance-zone {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .chart-container {
+            width: 180px;
+            height: 80px;
+            position: relative;
+            display: none;
+            /* Hide on intro */
+            z-index: 1;
+        }
+
+        .mode-typing .chart-container {
+            display: block;
+            /* Show in typing mode */
+        }
+
+        .left-chart {
+            margin-right: 15px;
+        }
+
+        .right-chart {
+            margin-left: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Settings Menu -->
+    <button class="settings-btn" id="settingsBtn">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+            </path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+            </path>
+        </svg>
+        Settings
+    </button>
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-section">
+            <span class="settings-label">Cursor Type</span>
+            <div class="settings-options" id="cursorOptions">
+                <button class="option-btn active" data-type="line">Line</button>
+                <button class="option-btn" data-type="block">Block</button>
+                <button class="option-btn" data-type="outline">Outline</button>
+                <button class="option-btn" data-type="underline">Underline</button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <span class="settings-label">Test Length</span>
+            <div class="settings-options" id="timeOptions">
+                <button class="option-btn" data-time="15">15</button>
+                <button class="option-btn" data-time="30">30</button>
+                <button class="option-btn active" data-time="60">60</button>
+                <button class="option-btn" data-time="120">120</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logo with spinning cube -->
+    <div class="logo-container">
+        <div class="logo-row">
+            <div class="logo">
+                <span id="typedText"></span><span class="caret"></span>
+            </div>
+
+            <div class="performance-zone">
+                <div class="chart-container left-chart">
+                    <canvas id="wpmChart"></canvas>
+                </div>
+
+                <div class="cube-container">
+                    <div class="cube">
+                        <div class="cube-face front"></div>
+                        <div class="cube-face back"></div>
+                        <div class="cube-face right"></div>
+                        <div class="cube-face left"></div>
+                        <div class="cube-face top"></div>
+                        <div class="cube-face bottom"></div>
+                    </div>
+                </div>
+
+                <div class="chart-container right-chart">
+                    <canvas id="accuracyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <button class="start-btn" id="startBtn">Press any key to enter</button>
+    </div>
+
+    <!-- Typing View -->
+    <div id="typing-view">
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-label">WPM:</span>
+                <span class="stat-value" id="wpm">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Accuracy:</span>
+                <span class="stat-value" id="accuracy">100%</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Time:</span>
+                <span class="stat-value" id="timer">60</span>
+            </div>
+        </div>
+        <div class="passage-container">
+            <div class="passage-text" id="passageText"></div>
+            <div id="custom-caret"></div>
+        </div>
+
+        <div id="result-page">
+            <div class="result-header">
+                <div class="result-stat">
+                    <span class="result-stat-label">WPM</span>
+                    <span class="result-stat-value" id="final-wpm">0</span>
+                </div>
+                <div class="result-stat">
+                    <span class="result-stat-label">Accuracy</span>
+                    <span class="result-stat-value" id="final-acc">100%</span>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="wpmHistoryChart"></canvas>
+            </div>
+
+            <button class="next-test-btn" id="nextTestBtn">Next Test</button>
+        </div>
+    </div>
+
+    <!-- Start Over Button (centered below typing view) -->
+    <button class="restart-button" id="restartBtn">
+        <svg class="restart-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+            </path>
+        </svg>
+        Start Over
+    </button>
+
+    <!-- Top Right Logo -->
+    <img src="logo-t.png" alt="Typify Logo" class="top-logo">
+
+    <!-- Developer Credit -->
+    <div class="developer-credit">
+        Developed by <a href="https://www.instagram.com/seanlistics/" target="_blank">Seanlistics</a>
+    </div>
+
+
+
+
+    <!-- Animated glow background -->
+    <div class="glow-container">
+        <div class="cursor-glow" id="cursorGlow"></div>
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+    </div>
+
+    <!-- Wave overlay -->
+    <div class="wave-overlay"></div>
+
+    <!-- Particles container -->
+    <div class="particles" id="particles"></div>
+
+    <script>
+        // Typing effect for logo
+        const text = "Typify.";
+        const typedTextElement = document.getElementById('typedText');
+        let charIndex = 0;
+
+        function typeText() {
+            if (charIndex < text.length) {
+                typedTextElement.textContent += text.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeText, 150); // 150ms delay between each character
+            }
+        }
+
+        // Start typing after a short delay
+        setTimeout(typeText, 500);
+
+        // Cursor glow effect with liquid trailing
+        const cursorGlow = document.getElementById('cursorGlow');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
+        // Track mouse movement
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            // Update position with CSS transition for liquid effect
+            cursorGlow.style.left = mouseX + 'px';
+            cursorGlow.style.top = mouseY + 'px';
+
+            // Flashlight reveal for logo in typing mode
+            const logo = document.querySelector('.logo');
+            if (logo && document.querySelector('.logo-container').classList.contains('mode-typing')) {
+                const rect = logo.getBoundingClientRect();
+                logo.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+                logo.style.setProperty('--my', `${e.clientY - rect.top}px`);
+            }
+        });
+
+        // Hide glow when mouse leaves the window
+        document.addEventListener('mouseleave', () => {
+            cursorGlow.style.opacity = '0';
+        });
+
+        document.addEventListener('mouseenter', () => {
+            cursorGlow.style.opacity = '1';
+        });
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = '-10px';
+
+                const duration = 15 + Math.random() * 20;
+                particle.style.animationDuration = duration + 's';
+
+                particle.style.animationDelay = Math.random() * 15 + 's';
+
+                particle.style.setProperty('--drift', (Math.random() - 0.5) * 100);
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Smooth Cube Rotation System
+        let cubeRotationX = 0;
+        let cubeRotationY = 0;
+        let cubeRotationZ = 0;
+        let currentSpinSpeed = 2; // Current rotation speed (increased from 1)
+        let targetSpinSpeed = 2;  // Target rotation speed (increased from 1)
+        const cubeElement = document.querySelector('.cube');
+        let has70Milestone = false;
+        let has100Milestone = false;
+
+        function animateCube() {
+            requestAnimationFrame(animateCube);
+
+            // Smooth acceleration toward target speed
+            currentSpinSpeed += (targetSpinSpeed - currentSpinSpeed) * 0.1;
+
+            // Natural decay (friction) - gradually slow down if not typing
+            targetSpinSpeed *= 0.98;
+
+            // Apply rotation with different speeds on each axis for visual interest
+            cubeRotationX += currentSpinSpeed * 0.5;
+            cubeRotationY += currentSpinSpeed * 0.7;
+            cubeRotationZ += currentSpinSpeed * 0.5;
+
+            // Update cube transform
+            if (cubeElement) {
+                cubeElement.style.transform = `rotateX(${cubeRotationX}deg) rotateY(${cubeRotationY}deg) rotateZ(${cubeRotationZ}deg)`;
+            }
+        }
+
+        // Start the animation loop
+        animateCube();
+
+        // Chart.js Performance Charts
+        let wpmChart, accuracyChart;
+        function initCharts() {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                },
+                elements: {
+                    point: { radius: 0 },
+                    line: {
+                        tension: 0.4,
+                        cubicInterpolationMode: 'monotone'
+                    }
+                },
+                plugins: { legend: { display: false } }
+            };
+
+            const ctxWpm = document.getElementById('wpmChart').getContext('2d');
+            wpmChart = new Chart(ctxWpm, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        borderColor: '#ad8aff',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: chartOptions
+            });
+
+            const ctxAcc = document.getElementById('accuracyChart').getContext('2d');
+            accuracyChart = new Chart(ctxAcc, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        borderColor: '#d1d0c5',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: chartOptions
+            });
+        }
+        initCharts();
+
+        // Transition Logic
+        function startEntrance() {
+            // Avoid double triggering
+            if (document.querySelector('.logo-container').classList.contains('mode-typing')) return;
+
+            // 1. Fade out landing elements
+            document.querySelector('.start-btn').classList.add('fade-out');
+            document.querySelector('.top-logo').classList.add('fade-out');
+            document.querySelector('.developer-credit').classList.add('fade-out');
+
+            // Set clean logo text for typing mode
+            document.getElementById('typedText').textContent = "Typify";
+
+            // 2. Animate Cube and Logo Container
+            document.querySelector('.logo-container').classList.add('mode-typing');
+
+            // 3. Reveal Typing View
+            document.getElementById('typing-view').classList.add('active');
+            document.getElementById('restartBtn').classList.add('active');
+            document.getElementById('settingsBtn').classList.add('show');
+
+            // Initialize typing test after transition
+            setTimeout(() => {
+                initializeTypingTest();
+            }, 1500);
+        }
+
+        document.getElementById('startBtn').addEventListener('click', startEntrance);
+
+        // Global keydown entrance
+        window.addEventListener('keydown', (e) => {
+            // Only trigger if typing view is NOT active (we are on splash page)
+            if (!document.getElementById('typing-view').classList.contains('active')) {
+                // Ignore function keys, control, etc. unless it's a typing key or Space/Enter
+                if (e.key.length === 1 || e.key === 'Enter' || e.key === ' ') {
+                    startEntrance();
+                }
+            }
+        });
+
+        // Typing Test Logic
+        const commonWords = [
+            "the", "be", "to", "of", "and", "a", "in", "that", "have", "i", "it", "for", "not", "on", "with", "he", "as", "you", "do", "at",
+            "this", "but", "his", "by", "from", "they", "we", "say", "her", "she", "or", "an", "will", "my", "one", "all", "would", "there", "their", "what",
+            "so", "up", "out", "if", "about", "who", "get", "which", "go", "me", "when", "make", "can", "like", "time", "no", "just", "him", "know", "take",
+            "people", "into", "year", "your", "good", "some", "could", "them", "see", "other", "than", "then", "now", "look", "only", "come", "its", "over", "think", "also",
+            "back", "after", "use", "two", "how", "our", "work", "first", "well", "way", "even", "new", "want", "because", "any", "these", "give", "day", "most", "us",
+            "is", "it", "are", "was", "were", "been", "has", "had", "can", "could", "may", "might", "must", "shall", "should", "will", "would",
+            "their", "if", "will", "up", "about", "out", "if", "about", "who", "get", "which", "go", "me", "when", "make", "can", "like", "time", "no", "just",
+            "house", "world", "school", "still", "last", "long", "each", "tell", "under", "work", "down", "side", "call", "hand", "right", "large", "must", "big", "high", "such"
+        ];
+
+        let passage = "";
+        let currentIndex = 0;
+        let correctChars = 0;
+        let incorrectChars = 0;
+        let startTime = null;
+        let isTypingStarted = false;
+        let selectedTime = 60;
+        let timeLeft = selectedTime;
+        let currentCursorType = 'line';
+        let timerInterval = null;
+        let wpmHistory = [];
+        let historyChart = null;
+        let isGameOver = false;
+        let currentScrollY = 0;
+        let lineCount = 0;
+        const customCaret = document.getElementById('custom-caret');
+
+        function generateRandomWords(count = 30) {
+            let words = [];
+            for (let i = 0; i < count; i++) {
+                const randomIndex = Math.floor(Math.random() * commonWords.length);
+                words.push(commonWords[randomIndex]);
+            }
+            return words.join(" ");
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                if (timeLeft <= 0) endGame();
+
+                // Push live data to charts
+                const currentWPM = parseInt(document.getElementById('wpm').textContent);
+                const currentAcc = parseInt(document.getElementById('accuracy').textContent);
+
+                wpmChart.data.labels.push("");
+                wpmChart.data.datasets[0].data.push(currentWPM);
+                wpmChart.update('none');
+
+                accuracyChart.data.labels.push("");
+                accuracyChart.data.datasets[0].data.push(currentAcc);
+                accuracyChart.update('none');
+
+                // Record history for final chart
+                wpmHistory.push(currentWPM);
+            }, 1000);
+        }
+
+        function endGame() {
+            isGameOver = true;
+            clearInterval(timerInterval);
+            customCaret.classList.remove('active');
+            document.removeEventListener('keydown', handleKeyPress);
+
+            // Final stats update
+            updateStats();
+
+            // Transition to Results Page - Hide EVERYTHING else
+            document.querySelector('.passage-container').style.display = 'none';
+            document.querySelector('.logo-container').style.display = 'none';
+            document.querySelector('.stats-container').style.opacity = '0';
+            document.getElementById('restartBtn').style.opacity = '0';
+            document.getElementById('restartBtn').style.pointerEvents = 'none';
+            document.getElementById('settingsBtn').style.opacity = '0';
+            document.getElementById('settingsBtn').style.pointerEvents = 'none';
+            document.getElementById('settingsModal').classList.remove('active');
+
+            document.getElementById('result-page').classList.add('active');
+
+            // Set final stats
+            document.getElementById('final-wpm').textContent = document.getElementById('wpm').textContent;
+            document.getElementById('final-acc').textContent = document.getElementById('accuracy').textContent;
+
+            renderHistoryChart();
+        }
+
+        function renderHistoryChart() {
+            if (historyChart) historyChart.destroy();
+
+            const ctx = document.getElementById('wpmHistoryChart').getContext('2d');
+
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(168, 85, 247, 0.4)');
+            gradient.addColorStop(1, 'rgba(168, 85, 247, 0)');
+
+            historyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: wpmHistory.map((_, i) => i + 1),
+                    datasets: [{
+                        label: 'WPM',
+                        data: wpmHistory,
+                        borderColor: '#a855f7',
+                        borderWidth: 3,
+                        fill: true,
+                        backgroundColor: gradient,
+                        tension: 0.4,
+                        cubicInterpolationMode: 'monotone',
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#a855f7'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            display: true,
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255,255,255,0.3)' }
+                        },
+                        y: {
+                            display: true,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: 'rgba(255,255,255,0.3)' },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(23, 26, 40, 0.9)',
+                            titleColor: '#a855f7',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializeTypingTest() {
+            passage = generateRandomWords();
+            const passageTextElement = document.getElementById('passageText');
+            passageTextElement.innerHTML = '';
+
+            isGameOver = false;
+            currentIndex = 0;
+            correctChars = 0;
+            incorrectChars = 0;
+            startTime = null;
+            isTypingStarted = false;
+            timeLeft = 60;
+            currentScrollY = 0;
+            lineCount = 0;
+
+            // Reset Charts
+            wpmChart.data.labels = [];
+            wpmChart.data.datasets[0].data = [];
+            wpmChart.update();
+            accuracyChart.data.labels = [];
+            accuracyChart.data.datasets[0].data = [];
+            accuracyChart.update();
+
+            timeLeft = selectedTime;
+            document.getElementById('timer').textContent = timeLeft;
+            passageTextElement.style.transition = 'none';
+            passageTextElement.style.transform = 'translateY(0)';
+            passageTextElement.style.opacity = '0'; // Hide during generation/trimming
+            customCaret.style.transform = 'translate(0, 0)';
+
+            // Generate initial words
+            passage = generateRandomWords(40); // Generate enough to fill at least 3 lines
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < passage.length; i++) {
+                const span = document.createElement('span');
+                span.textContent = passage[i];
+                span.className = 'char';
+                if (i === 0) span.classList.add('current');
+                fragment.appendChild(span);
+            }
+            passageTextElement.appendChild(fragment);
+
+            // After rendering, trim to exactly 3 lines
+            setTimeout(() => {
+                const chars = passageTextElement.querySelectorAll('.char');
+                if (chars.length === 0) return;
+
+                const firstOffset = chars[0].offsetTop;
+                let linesSeen = 1;
+                let lastOffset = firstOffset;
+                let trimIndex = chars.length;
+
+                for (let i = 0; i < chars.length; i++) {
+                    if (chars[i].offsetTop > lastOffset) {
+                        linesSeen++;
+                        lastOffset = chars[i].offsetTop;
+                    }
+                    if (linesSeen > 3) {
+                        trimIndex = i;
+                        break;
+                    }
+                }
+
+                // Remove extras
+                for (let i = chars.length - 1; i >= trimIndex; i--) {
+                    chars[i].remove();
+                }
+
+                // Update passage string to match DOM
+                passage = passage.slice(0, trimIndex);
+
+                // Update passage string to match DOM
+                passage = passage.slice(0, trimIndex);
+
+                passageTextElement.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+                // Small delay before showing to ensure layout is settled
+                requestAnimationFrame(() => {
+                    passageTextElement.style.opacity = '1';
+                });
+                customCaret.style.transform = 'translate(0, 0)';
+                moveCaretToChar(0);
+                customCaret.classList.add('active');
+            }, 30); // Faster trim fallback
+
+            if (timerInterval) clearInterval(timerInterval);
+
+            // Ensure event listener is only added once
+            document.removeEventListener('keydown', handleKeyPress);
+            document.addEventListener('keydown', handleKeyPress);
+        }
+
+        function moveCaretToChar(index) {
+            const chars = document.querySelectorAll('#passageText .char');
+            const target = chars[index];
+
+            if (!target) return;
+
+            const rect = target.getBoundingClientRect();
+            const containerRect = document.querySelector('.passage-container').getBoundingClientRect();
+
+            const x = rect.left - containerRect.left;
+            const y = rect.top - containerRect.top;
+
+            customCaret.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        function handleKeyPress(e) {
+            // Ignore if game is over or typing view is not active
+            if (isGameOver || !document.getElementById('typing-view').classList.contains('active')) {
+                return;
+            }
+
+            // Start timer on first keypress
+            if (!isTypingStarted) {
+                startTime = Date.now();
+                isTypingStarted = true;
+                startTimer();
+            }
+
+            // Ignore special keys
+            if (e.key.length > 1 && e.key !== 'Backspace') {
+                return;
+            }
+
+            e.preventDefault();
+
+            const spans = document.querySelectorAll('#passageText span');
+
+            if (e.key === 'Backspace') {
+                if (currentIndex > 0) {
+                    const nextSpan = spans[currentIndex];
+                    currentIndex--;
+                    const currentSpan = spans[currentIndex];
+
+                    // Line detection on backspace
+                    if (nextSpan && currentSpan.offsetTop < nextSpan.offsetTop) {
+                        lineCount--;
+                        const lineHeight = 43.2;
+                        currentScrollY = Math.max(0, lineCount * lineHeight);
+                        document.getElementById('passageText').style.transform = `translateY(-${currentScrollY}px)`;
+                    }
+
+                    if (spans[currentIndex].classList.contains('correct')) {
+                        correctChars--;
+                    } else if (spans[currentIndex].classList.contains('incorrect')) {
+                        incorrectChars--;
+                    }
+
+                    spans[currentIndex].classList.remove('correct', 'incorrect', 'current');
+                    spans[currentIndex].classList.add('current');
+                    if (currentIndex + 1 < spans.length) {
+                        spans[currentIndex + 1].classList.remove('current');
+                    }
+                    moveCaretToChar(currentIndex);
+                    updateStats();
+                }
+            } else {
+                const typedChar = e.key;
+                let expectedChar = passage[currentIndex];
+
+                if (typedChar === expectedChar) {
+                } else if (expectedChar === ' ' && currentIndex + 1 < spans.length) {
+                    const nextSpan = spans[currentIndex + 1];
+                    const currentSpan = spans[currentIndex];
+                    if (nextSpan.offsetTop > currentSpan.offsetTop && typedChar === passage[currentIndex + 1]) {
+                        spans[currentIndex].classList.add('correct');
+                        correctChars++;
+                        currentIndex++;
+                        expectedChar = passage[currentIndex];
+                    }
+                }
+
+                if (typedChar === expectedChar) {
+                    spans[currentIndex].classList.remove('current');
+                    spans[currentIndex].classList.add('correct');
+                    correctChars++;
+                } else {
+                    spans[currentIndex].classList.remove('current');
+                    spans[currentIndex].classList.add('incorrect');
+                    incorrectChars++;
+                }
+
+                currentIndex++;
+
+                if (currentIndex < spans.length) {
+                    const nextSpan = spans[currentIndex];
+                    const prevSpan = spans[currentIndex - 1];
+
+                    // Line detection
+                    if (nextSpan.offsetTop > prevSpan.offsetTop) {
+                        lineCount++;
+                        // If we are moving to Line 2 in the view, we scroll and recycle
+                        if (lineCount === 1) {
+                            const lineHeight = 43.2;
+                            currentScrollY = lineHeight;
+                            document.getElementById('passageText').style.transform = `translateY(-${currentScrollY}px)`;
+
+                            // Recycle top line after scroll finishes
+                            setTimeout(() => {
+                                const container = document.getElementById('passageText');
+                                const currentSpans = container.querySelectorAll('.char');
+                                if (currentSpans.length === 0) return;
+
+                                // Identify spans on the top line
+                                const firstTopOffset = currentSpans[0].offsetTop;
+                                const toRemove = [];
+                                for (let span of currentSpans) {
+                                    if (span.offsetTop === firstTopOffset) toRemove.push(span);
+                                    else break;
+                                }
+
+                                // Remove them
+                                const removedCount = toRemove.length;
+                                toRemove.forEach(s => s.remove());
+
+                                // Adjust index and passage relative to remaining DOM
+                                passage = passage.slice(removedCount);
+                                currentIndex -= removedCount;
+
+                                // Snap back
+                                container.style.transition = 'none';
+                                container.style.transform = 'translateY(0)';
+                                lineCount = 0;
+                                currentScrollY = 0;
+
+                                // Add a new line instantly
+                                let newWordsStr = (passage.endsWith(" ") ? "" : " ") + generateRandomWords(12);
+                                const frag = document.createDocumentFragment();
+                                for (let char of newWordsStr) {
+                                    const s = document.createElement('span');
+                                    s.textContent = char;
+                                    s.className = 'char';
+                                    frag.appendChild(s);
+                                }
+                                container.appendChild(frag);
+
+                                // Final trim to exactly 3 lines in the internal state
+                                const updatedSpans = container.querySelectorAll('.char');
+                                if (updatedSpans.length > 0) {
+                                    const topOffset = updatedSpans[0].offsetTop;
+                                    let lSeen = 1;
+                                    let lastO = topOffset;
+                                    let tIndex = updatedSpans.length;
+                                    for (let i = 0; i < updatedSpans.length; i++) {
+                                        if (updatedSpans[i].offsetTop > lastO) {
+                                            lSeen++;
+                                            lastO = updatedSpans[i].offsetTop;
+                                        }
+                                        if (lSeen > 3) {
+                                            tIndex = i;
+                                            break;
+                                        }
+                                    }
+                                    // Remove excess spans from DOM
+                                    for (let i = updatedSpans.length - 1; i >= tIndex; i--) {
+                                        updatedSpans[i].remove();
+                                    }
+
+                                    // Re-sync passage string to match current DOM
+                                    let finalPassage = "";
+                                    container.querySelectorAll('.char').forEach(s => finalPassage += s.textContent);
+                                    passage = finalPassage;
+                                }
+
+                                // Restore transition and update caret
+                                setTimeout(() => {
+                                    container.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+                                    moveCaretToChar(currentIndex);
+                                }, 10);
+                            }, 200);
+                        }
+                    }
+
+                    nextSpan.classList.add('current');
+                    moveCaretToChar(currentIndex);
+                }
+
+                updateStats();
+            }
+        }
+
+        function updateStats() {
+            // Calculate WPM
+            if (startTime) {
+                const timeElapsedSeconds = (Date.now() - startTime) / 1000;
+                const timeElapsedMinutes = timeElapsedSeconds / 60;
+                const wordsTyped = correctChars / 5; // standard: 5 characters = 1 word
+
+                // Only calculate WPM after 2 seconds to prevent spikes
+                let wpm = 0;
+                if (timeElapsedSeconds >= 2) {
+                    wpm = Math.round(wordsTyped / timeElapsedMinutes) || 0;
+                }
+
+                document.getElementById('wpm').textContent = wpm;
+
+                // Update cube rotation speed based on WPM
+                updateCubeSpeed(wpm);
+            }
+
+            // Calculate Accuracy
+            const totalTyped = correctChars + incorrectChars;
+            const accuracy = totalTyped > 0 ? Math.round((correctChars / totalTyped) * 100) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        function updateCubeSpeed(wpm) {
+            // Map WPM to rotation speed (increased multipliers)
+            const baseSpeed = 2;
+            const maxSpeed = 8;
+            const wpmSpeed = Math.min(maxSpeed, baseSpeed + (wpm / 20));
+
+            // Allow speed bursts (milestones) to decay naturally by using Math.max
+            targetSpinSpeed = Math.max(targetSpinSpeed, wpmSpeed);
+
+            const cubeContainer = document.querySelector('.cube-container');
+            const cubeFaces = document.querySelectorAll('.cube-face');
+
+            // Celebrate 70 WPM milestone (Bronze)
+            if (wpm >= 70 && !has70Milestone) {
+                has70Milestone = true;
+                targetSpinSpeed = 15; // Quick spin burst
+                cubeFaces.forEach(face => face.classList.add('bronze'));
+                if (cubeContainer) {
+                    cubeContainer.classList.add('milestone-100'); // Reuse scaling animation
+                    setTimeout(() => {
+                        cubeContainer.classList.remove('milestone-100');
+                    }, 600);
+                }
+            }
+
+            // Celebrate 100 WPM milestone (Gold)
+            if (wpm >= 100 && !has100Milestone) {
+                has100Milestone = true;
+                targetSpinSpeed = 20; // Even quicker spin burst
+                cubeFaces.forEach(face => {
+                    face.classList.remove('bronze');
+                    face.classList.add('gold');
+                });
+                if (cubeContainer) {
+                    cubeContainer.classList.add('milestone-100');
+                    setTimeout(() => {
+                        cubeContainer.classList.remove('milestone-100');
+                    }, 600);
+                }
+            }
+        }
+
+        // Restart functionality
+        function restartTest() {
+            if (timerInterval) clearInterval(timerInterval);
+
+            // Reset milestone flags
+            has70Milestone = false;
+            has100Milestone = false;
+
+            // Reset cube colors
+            const cubeFaces = document.querySelectorAll('.cube-face');
+            cubeFaces.forEach(face => {
+                face.classList.remove('bronze', 'gold');
+            });
+
+            // Reset stats display
+            document.getElementById('wpm').textContent = '0';
+            document.getElementById('accuracy').textContent = '100%';
+            document.getElementById('timer').textContent = selectedTime;
+
+            // Reinitialize the test
+            initializeTypingTest();
+        }
+
+        // Restart button click handler
+        document.getElementById('restartBtn').addEventListener('click', restartTest);
+
+        // Tab + Enter shortcut handler
+        let tabDown = false;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') tabDown = true;
+            if (e.key === 'Enter' && tabDown) {
+                e.preventDefault();
+                restartTest();
+            }
+        });
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'Tab') tabDown = false;
+        });
+
+        // Settings Menu Logic
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const cursorOptions = document.getElementById('cursorOptions');
+        const timeOptions = document.getElementById('timeOptions');
+
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.classList.toggle('active');
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (!settingsBtn.contains(e.target) && !settingsModal.contains(e.target)) {
+                settingsModal.classList.remove('active');
+            }
+        });
+
+        cursorOptions.addEventListener('click', (e) => {
+            const btn = e.target.closest('.option-btn');
+            if (!btn) return;
+
+            // Update Active UI
+            cursorOptions.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update Caret
+            currentCursorType = btn.dataset.type;
+            customCaret.className = '';
+            customCaret.classList.add('active'); // Keep active if it was
+            if (currentCursorType !== 'line') {
+                customCaret.classList.add(`type-${currentCursorType}`);
+            }
+        });
+
+        timeOptions.addEventListener('click', (e) => {
+            const btn = e.target.closest('.option-btn');
+            if (!btn) return;
+
+            // Update Active UI
+            timeOptions.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update Time
+            selectedTime = parseInt(btn.dataset.time);
+
+            // If game hasn't started, update display immediately
+            if (!isTypingStarted) {
+                timeLeft = selectedTime;
+                document.getElementById('timer').textContent = timeLeft;
+            }
+        });
+
+        // Reset game for Next Test
+        document.getElementById('nextTestBtn').addEventListener('click', () => {
+            // Reset state
+            wpmHistory = [];
+
+            // Switch views back
+            document.querySelector('.passage-container').style.display = 'block';
+            document.querySelector('.logo-container').style.display = 'flex';
+            document.querySelector('.stats-container').style.opacity = '1';
+            document.getElementById('restartBtn').style.opacity = '1';
+            document.getElementById('restartBtn').style.pointerEvents = 'auto';
+            document.getElementById('settingsBtn').style.opacity = '1';
+            document.getElementById('settingsBtn').style.pointerEvents = 'auto';
+
+            document.getElementById('result-page').classList.remove('active');
+
+            // Re-initialize
+            restartTest();
+        });
+    </script>
+</body>
+
+</html>
